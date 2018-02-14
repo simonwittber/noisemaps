@@ -17,6 +17,7 @@ namespace DifferentMethods.NoiseMaps
         public bool forceOne = false;
         public bool forceZero = false;
         public FractalType type;
+        public int repeat = 0;
         public Vector3 offset;
         [Range(0, 32)]
         public float frequency = 1;
@@ -165,7 +166,7 @@ namespace DifferentMethods.NoiseMaps
         {
             var F = frequency;
             var A = 1f;
-            var N = 1f - Mathf.Abs(ImprovedNoise.Sample(seed, x * F, y * F, z * F));
+            var N = 1f - Mathf.Abs(ImprovedNoise.Sample(x * F, y * F, z * F, seed: seed, repeat: repeat));
             N *= N;
             var s = N;
             for (var i = 1; i < octaves; i++)
@@ -173,7 +174,7 @@ namespace DifferentMethods.NoiseMaps
                 var weight = Mathf.Clamp01(s * 2);
                 F *= lacunarity;
                 A *= persistence;
-                s = 1f - Mathf.Abs(ImprovedNoise.Sample(seed + i, x * F, y * F, z * F));
+                s = 1f - Mathf.Abs(ImprovedNoise.Sample(x * F, y * F, z * F, seed: seed + i, repeat: repeat));
                 s *= s;
                 s *= weight;
                 N += s * A;
@@ -190,7 +191,7 @@ namespace DifferentMethods.NoiseMaps
             var A = 1f;
             for (var i = 0; i < octaves; i++)
             {
-                var n = ImprovedNoise.Sample(seed + i, x * F, y * F, z * F);
+                var n = ImprovedNoise.Sample(x * F, y * F, z * F, seed: seed + i, repeat: repeat);
                 N += (n * A);
                 A *= persistence;
                 F *= lacunarity;
@@ -205,7 +206,7 @@ namespace DifferentMethods.NoiseMaps
             var A = 1f;
             for (var i = 0; i < octaves; i++)
             {
-                var n = -1 + ImprovedNoise.Sample(seed + i, x * F, y * F, z * F);
+                var n = -1 + ImprovedNoise.Sample(x * F, y * F, z * F, seed: seed + i, repeat: repeat);
                 N *= (n * A);
                 A *= persistence;
                 F *= lacunarity;
@@ -220,7 +221,7 @@ namespace DifferentMethods.NoiseMaps
             var A = 1f;
             for (var i = 0; i < octaves; i++)
             {
-                var s = ImprovedNoise.Sample(seed, x * F, y * F, z * F);
+                var s = ImprovedNoise.Sample(x * F, y * F, z * F, seed: seed + i, repeat: repeat);
                 s *= A;
                 s = Mathf.Abs(s);
                 N += (s * lacunarity) + bias;
